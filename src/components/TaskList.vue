@@ -26,13 +26,7 @@
             tasks: []
         }),
         created() {
-            let tasks = JSON.parse(localStorage.getItem('tasks'));
-
-            if(tasks !== null) {
-                tasks.forEach((task) => {
-                    this.tasks.push(task)
-                })
-            }
+            this.addTaskStorage();
 
             this.$parent.$on('add-task', this.addTask);
         },
@@ -42,6 +36,15 @@
                     this.tasks.unshift({text})
                 }
                 localStorage.tasks = JSON.stringify(this.tasks);
+            },
+            addTaskStorage() {
+                let tasks = JSON.parse(localStorage.getItem('tasks'));
+
+                if(tasks !== null) {
+                    tasks.forEach((task) => {
+                        this.tasks.push(task)
+                    })
+                }
             }
         }
 
