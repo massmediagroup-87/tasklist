@@ -1,8 +1,8 @@
 <template>
     <ol class="list-group">
         <task
+                :checkAll="checkAll"
                 :key="task.id"
-                :status="status"
                 :todo="task"
                 v-for="task in tasks"
         />
@@ -18,39 +18,8 @@
             Task
         },
         props: {
-            status: {
-                type: Boolean
-            }
-        },
-        data: () => ({
-            tasks: []
-        }),
-        created() {
-            this.addTaskStorage();
-
-            this.$parent.$on('add-task', this.addTask);
-        },
-        methods: {
-            addTask(text) {
-                if(text.length > 2) {
-                    this.tasks.unshift({text})
-                }
-                localStorage.tasks = JSON.stringify(this.tasks);
-            },
-            addTaskStorage() {
-                let tasks = JSON.parse(localStorage.getItem('tasks'));
-
-                if(tasks !== null) {
-                    tasks.forEach((task) => {
-                        this.tasks.push(task)
-                    })
-                }
-            }
+            'tasks': Array,
+            'checkAll': Boolean
         }
-
     }
 </script>
-
-<style scoped>
-
-</style>
