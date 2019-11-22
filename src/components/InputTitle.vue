@@ -9,19 +9,15 @@
 
     export default {
         name: "InputTitle",
-        components: {},
         data: () => ({
             text: ''
         }),
         methods: {
             addTask() {
-                this.$parent.$emit('add-task', this.text);
+                this.$emit('add-task', this.text);
 
                 this.text = '';
             }
-        },
-        updated() {
-            this.$parent.text = this.text;
         }
     }
 

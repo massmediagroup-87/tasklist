@@ -1,11 +1,24 @@
 <template>
     <div>
-        <input-title/>
+        <input-title @add-task="addTask"/>
         <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-            <input class="custom-control-input" id="customControlAutosizing" type="checkbox" v-model="checked">
+
+            <input
+                    class="custom-control-input"
+                    id="customControlAutosizing"
+                    type="checkbox"
+                    v-model="checked">
+
             <label class="custom-control-label" for="customControlAutosizing">Show all tasks</label>
+
         </div>
-        <task-list :check-all="checked" :tasks="tasks"/>
+
+        <task-list
+                :check-all="checked"
+                :tasks="tasks"
+                @remove="destroyTask"
+                @checked-task="checkedTask"/>
+
     </div>
 </template>
 
@@ -21,20 +34,15 @@
         },
         data: () => ({
             checked: false,
-            tasks: [],
-            text: ''
+            tasks: []
         }),
         updated() {
             this.setStorage('checked', this.checked);
-
-            this.sortTasks(this.tasks);
         },
         created() {
             this.addTaskStorage();
-
+            this.$on('checked-task', this.checkedTask);
             if (this.getStorage('checked')) this.checked = this.getStorage('checked');
-
-            this.$on('add-task', this.addTask);
         },
         methods: {
             getStorage(key) {
@@ -63,20 +71,18 @@
                     })
                 }
             },
-            sortTasks(arr) {
-                for (let i = 0, endI = arr.length - 1; i < endI; i++) {
-                    let wasSwap = false;
-
-                    for (let j = 0, endJ = endI - i; j < endJ; j++) {
-                        if (arr[j].active < arr[j + 1].active) {
-                            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                            wasSwap = true;
-                        }
+            checkedTask(id) {
+                this.tasks.forEach((item, index) => {
+                    if (this.tasks[index].id === id) {
+                        this.tasks[index].active = !this.tasks[index].active;
                     }
+                });
 
-                    if (!wasSwap) break;
-                }
-                return arr;
+                this.setStorage('tasks', this.tasks);
+            },
+            destroyTask(id) {
+                this.tasks = this.tasks.filter(item => item.id !== id);
+                this.setStorage('tasks', this.tasks);
             }
         }
     }

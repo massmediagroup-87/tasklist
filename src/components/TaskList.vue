@@ -4,7 +4,9 @@
                 :checkAll="checkAll"
                 :key="task.id"
                 :todo="task"
-                v-for="task in tasks"
+                @destroy="destroyTask"
+                @checked-task="checkedTask"
+                v-for="task in sortedTasks"
         />
     </ol>
 </template>
@@ -18,8 +20,28 @@
             Task
         },
         props: {
-            'tasks': Array,
-            'checkAll': Boolean
+            tasks: Array,
+            checkAll: Boolean
+        },
+        methods: {
+            compare(a) {
+                if (a.active) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            },
+            checkedTask(id) {
+                this.$emit('checked-task', id)
+            },
+            destroyTask(id) {
+                this.$emit('remove', id)
+            }
+        },
+        computed: {
+            sortedTasks() {
+                return [...this.tasks].sort(this.compare);
+            }
         }
     }
 </script>
